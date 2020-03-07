@@ -2,7 +2,10 @@
   "name": "react-classroom",
   "version": "0.1.0",
   "private": true,
+  "main": "dist/index",
+  "typings": "dist/index",
   "dependencies": {
+    "@material-ui/core": "^4.9.5",
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
@@ -10,8 +13,15 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
+    "axios": "^0.19.2",
+    "csvtojson": "^2.0.10",
+    "papaparse": "^5.1.1",
     "react": "^16.13.0",
+    "react-csv": "^2.0.1",
+    "react-csv-reader": "^2.0.2",
     "react-dom": "^16.13.0",
+    "react-papaparse": "^2.1.1",
+    "react-player": "^1.15.2",
     "react-scripts": "3.4.0",
     "typescript": "~3.7.2"
   },
@@ -35,5 +45,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "csv-loader": "^3.0.2"
   }
 }
