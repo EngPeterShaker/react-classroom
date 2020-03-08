@@ -1,103 +1,78 @@
-import React , {useRef} from 'react'
+import React, { FC, useRef, useState, useEffect, useCallback } from 'react'
 import ReactPlayer from 'react-player'
 import useInterval from "../Hooks/useInterval";
-// import Papa from 'papaparse';
-import CSVReader from "react-csv-reader";
-import axios from 'axios'
+import moment from 'moment';
 import { readRemoteFile } from 'react-papaparse'
 
 interface Props {
-  /** The user's name */
   name?: string;
-  /** Should the name be rendered in bold */
   priority?: boolean
 }
+const Classrom: FC<Props> = props => {
+  const playerRef: any = useRef<HTMLInputElement>(null);
+  let test = useRef({});
+  const [text, setText] = useState('');
+  const [time, setTime] = useState('');
+  const [lastShownTime, setLastShownTime] = useState<any>(null)
+  const [isPlaying, setIsPlaying] = useState(false);
 
-const Classrom: React.FC<Props> = props => {
-  const playerRef : any= useRef(null);
+  const getCsvData = useCallback(async () => {
+    readRemoteFile('./sheet.csv', {
+      complete: function (res: any) {
+        const categoryPosts = res.data.reduce((acc: any, row: Array<string>) => {
+          let timeString = row[0];
+          const obj = { [timeString.toString()]: row[1] }
+          return { ...acc, ...obj };
+        }, {});
+        test.current = categoryPosts;
+      }
+    })
+  }, [])
 
-const handleForce = (data: any, fileName: any) => console.log(data);
-
-const papaparseOptions = {
-  header: true,
-  dynamicTyping: true,
-  skipEmptyLines: true,
-  transformHeader: (header: any) => header.toLowerCase().replace(/\W/g, "_")
-};
-
-  // const fetchCsv=()=> {
-  //   fetch('some-url')
-  // .then(response => {
-  //   return response
-  // })
-  // }
-  // React.useEffect(() => {
-
-  //  const res = getCsvData()
-  //  console.log(' res',  res)
-  // }, [])
-
-  const getCsvData = async ()  => {
-  // let csvData = await fetchCsv();
-
-// )
-
-axios.get('https://www.dropbox.com/s/yvc6z8997qac4e5/sheet.csv')
-.then(res => {
-  console.log('res', res)
-})
-
-// }
-// const work = (str: String ) => {
-//   console.log('str', str)
-//   // let data = str.split('\n').map(i=>i.split(','));
-//   // let headers = data.shift();
-//   // let output =data.map(d=>{obj = {};headers.map((h,i)=>obj[headers[i]] = d[i]);return obj;});
-//   // console.log(output);
-}
-
-  const getCurrentTime  = (): any => {
+  const getCurrentTime = (): any => {
     const myplayer = (playerRef as any).current
-    console.log('myplayer', myplayer)
-    if (myplayer){
-
-      // return null
-      const elapsedTime =myplayer.getCurrentTime();
-      const minutes = Math.floor(elapsedTime / 60);
-      const seconds = Math.floor(elapsedTime - (minutes * 60));
-
-      console.log('minutes', minutes)
-      console.log('seconds', seconds)
-      const time = { minutes , seconds}
-      return time
-
-      // console.log('playerRef',myplayer.getCurrentTime()/1000)
-      // return playerRef.current.getCurrentTime()
-      // console.log('getCurrentTime()', getCurrentTime())
+    const elapsedTime = myplayer.getCurrentTime();
+    let dateobj = new Date();
+    const minutes = Math.floor(elapsedTime / 60);
+    dateobj.setMinutes(Math.floor(elapsedTime / 60));
+    dateobj.setSeconds(Math.floor(elapsedTime - (minutes * 60)));
+    let newTime = moment(dateobj).format('m:ss')
+    let subtl: any = test.current
+    let diff = moment(dateobj).diff(moment(lastShownTime)) / 1000
+    if (!isNaN(diff) && diff > 5) {
+      setText('')
+    }
+    if (newTime !== time && subtl[newTime]) {
+      setTime(newTime)
+      setText(subtl[newTime])
+      setLastShownTime(dateobj)
     }
   }
 
-  useInterval(() => {
-    getCurrentTime()
-}, 10* 1000);
+  useEffect(() => {
+    getCsvData()
+  }, [getCsvData])
 
+  useInterval(() => {
+    if (isPlaying) {
+      getCurrentTime()
+    }
+  }, 1000);
   return (
     <div>
-      <ReactPlayer url='https://www.youtube.com/watch?v=a9UrKTVEeZA'
-      ref={playerRef}
-      volume={0}
-      muted={true}
-      playing={false}
-       />
-            <button onClick={()=> getCsvData()}>Focus the input</button>
+      <ReactPlayer
+        url='https://www.youtube.com/watch?v=a9UrKTVEeZA'
+        ref={playerRef}
+        volume={0}
+        muted={true}
+        playing={false}
+        onPlay={() => setIsPlaying(true)}
+        onPause={() => setIsPlaying(false)}
+      />
+      <p>
+        {text}
+      </p>
 
-
-            <CSVReader
-      cssClass="react-csv-input"
-      label="Select CSV with secret Death Star statistics"
-      onFileLoaded={handleForce}
-      parserOptions={papaparseOptions}
-    />
     </div>
   )
 }
