@@ -1,3 +1,7 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/0592aeda-4449-415b-b61f-26836bedcc69/deploy-status)](https://app.netlify.com/sites/react-classroom-peter/deploys)
+
+
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
 ## Available Scripts
