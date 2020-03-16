@@ -1,7 +1,8 @@
 import React from 'react';
 import logo from './logo.svg';
 import './App.css';
-import Classrom from "./pages/Classrom";
+import NavBar from './pages/NavBar'
+// import Classrom from "./pages/Classrom";
 
 function App() {
   return (
@@ -19,8 +20,11 @@ function App() {
         >
           Learn React
         </a>
+
       </header> */}
-      <Classrom />
+
+      <NavBar />
+      {/* <Classrom /> */}
     </div>
   );
 }
