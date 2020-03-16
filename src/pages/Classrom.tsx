@@ -8,6 +8,16 @@ interface Props {
   name?: string;
   priority?: boolean
 }
+
+const Styles = {
+  wrapper: {
+    marginLeft: '30%'
+  },
+  text: {
+    backgroundColor: '#3f51b547',
+    marginTop: '2em',
+  }
+}
 const Classrom: FC<Props> = props => {
   const playerRef: any = useRef<HTMLInputElement>(null);
   let test = useRef({});
@@ -44,7 +54,7 @@ const Classrom: FC<Props> = props => {
     }
     if (newTime !== time && subtl[newTime]) {
       setTime(newTime)
-      setText(subtl[newTime])
+      setText(`Teacher Note at ${newTime}:${subtl[newTime]}`)
       setLastShownTime(dateobj)
     }
   }
@@ -58,8 +68,8 @@ const Classrom: FC<Props> = props => {
       getCurrentTime()
     }
   }, 1000);
-  return (
-    <div>
+  return (<>
+    <div style={Styles.wrapper}>
       <ReactPlayer
         url='https://www.youtube.com/watch?v=a9UrKTVEeZA'
         ref={playerRef}
@@ -68,12 +78,19 @@ const Classrom: FC<Props> = props => {
         playing={false}
         onPlay={() => setIsPlaying(true)}
         onPause={() => setIsPlaying(false)}
-      />
-      <p>
+        config={{
+          file: {
+            attributes: {
+              style: { width: '50%', height: '50%' }
+            }
+          }
+        }}
+        />
+        </div>
+      <p style={Styles.text}>
         {text}
       </p>
-
-    </div>
+</>
   )
 }
 
